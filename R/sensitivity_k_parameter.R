@@ -117,7 +117,7 @@ for (i in k) {
   # Combine both data frames:
   simulation <- rbind(sim_prey, sim_predator)
   
-    # Make some shenanigans to calculate predation of each predator over each prey cohort:
+  # Make some shenanigans to calculate predation of each predator over each prey cohort:
   simulation <- simulation %>%
     filter(length_fresh <= predator_cutoff) %>% 
     slice(rep(row_number(), nrow(sim_predator))) %>%
@@ -149,7 +149,7 @@ for (i in k) {
     summarise(total_survival_d = prod(survival_d)) %>%
     mutate(prey_density_24 = prey_density * total_survival_d)
   
-    # Make a plot:
+  # Make a plot:
   p2 <- ggplot(data = simulation) +
     geom_col(aes(x = prey_length * 1000, y = prey_density / nrow(sim_predator)), width = .085) +
     lims(x = c(2.5, 7.5)) + # 10.5
@@ -165,7 +165,7 @@ Predator (mm)")) +
   
   # Put each plot in a list:
   plot_list[[id]] <- p2
-
+  
 }
 
 # Plot it out:
