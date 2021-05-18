@@ -29,7 +29,7 @@ library(png)
 
 
 ##################################################################
-# LOAD  DATA
+# Load data
 load("data/data.RData")
 load("data/id_operations.RData")
 
@@ -249,7 +249,7 @@ time0 <- Sys.time()
 for(j in id_operations) {
   sim_prey <- data %>%
     as.data.frame() %>%
-    filter(id_operation == j, species == "Thunnus alalunga", length_fresh < predator_cutoff) %>%
+    filter(id == j, species == "Thunnus alalunga", length_fresh < predator_cutoff) %>%
     dplyr::select(length_fresh, mean_density) 
   
   
@@ -307,11 +307,11 @@ for(j in id_operations) {
     # What was the tota survival rate?
     total_predator_density <- sum(unique(simulation_i$predator_density))
     pressure_group <- i
-    id_operation <- j
+    id <- j
     prey_t0 <- sum(sim_prey$mean_density)
     prey_t24 <- sum(simulation2$prey_density_24)
     probability_survival <- prey_t24 / prey_t0
-    df2 <- rbind(df2, data.frame(id_operation, pressure_group, total_predator_density, prey_t0, prey_t24, probability_survival))
+    df2 <- rbind(df2, data.frame(id, pressure_group, total_predator_density, prey_t0, prey_t24, probability_survival))
     
   }
   
@@ -322,12 +322,12 @@ Sys.time() -time0
 
 
 # Calculate expected mean survival of all observed stations at increasing piscivorous pressure:
-# Make id_operation a factor:
-df3$id_operation <- as.factor(df3$id_operation)
+# Make id a factor:
+df3$id <- as.factor(df3$id)
 
 # Now calculate mean survival +- SE:
 df3_mean <- df3 %>%
-  mutate(id_operation = as.factor(id_operation)) %>%
+  mutate(id = as.factor(id)) %>%
   filter(!is.na(probability_survival)) %>%
   group_by(total_predator_density) %>%
   summarise(mean_survival = mean(probability_survival),
@@ -348,7 +348,7 @@ df12_sim <- df1_sim[c(2, 10, 37, 76),]
 
 # Before plotting, let's arrange the predator data set to include it in the plot as a % observations:
 predator_size_distribution <- predator_size_distribution %>%
-  group_by(id_operation) %>%
+  group_by(id) %>%
   summarise(total_mean_density = sum(mean_density)) %>% 
   group_by(density_range = cut(total_mean_density, breaks = seq(0.000001, 0.170001, by = 0.005))) %>% 
   summarise(n = n()) %>%
@@ -367,7 +367,7 @@ p <- ggplot() +
   geom_col(data = predator_size_distribution, aes(x = total_mean_density, y = percent_observations),  fill = "darkorange1", color = "white")  + 
   
   geom_line(data = df3, aes(x = total_predator_density, y = 5.5 * probability_survival, 
-                            group = as.factor(id_operation)), colour = "gray28", show.legend = FALSE, alpha = .15, size = .1) +
+                            group = as.factor(id)), colour = "gray28", show.legend = FALSE, alpha = .15, size = .1) +
   geom_line(data = df3_mean, aes(x = total_predator_density, y =  5.5 * mean_survival))  +
   geom_line(data = df1_sim, aes(x = total_predator_density, y =  5.5 * probability_survival),
             color = "black", linetype = "dashed", show.legend = FALSE, alpha = 1, size = .3) +

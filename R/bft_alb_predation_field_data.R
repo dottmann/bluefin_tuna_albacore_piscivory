@@ -16,6 +16,8 @@
 ##################################################################
 
 ##################################################################
+# Clear environment:
+rm(list = ls())
 
 
 #############################
@@ -24,8 +26,7 @@ library(tidyverse)
 
 
 ##################################################################
-# LOAD  DATA
-
+# Load data
 load("data/data.RData")
 load("data/df_postflexion.RData")
 load("data/data2.RData")
@@ -70,14 +71,14 @@ k <- 10
 # Now let's get values for the entire data set:
 
 # Prepare an ouput table:
-df1 <- data.frame(row.names = c("id_operation", "id_netcolector", "prey_t0", "prey_t24", "prey_removed"))
+df1 <- data.frame(row.names = c("id",  "prey_t0", "prey_t24", "prey_removed"))
 
 
-for(i in unique(data$id_operation)) {
+for(i in unique(data$id)) {
   
   # First prepare the denisty and length data of predaotrs and prey:
   observations_df <- data %>%
-    filter(id_operation %in% i)
+    filter(id %in% i)
   
   # Make a data frame with prey and predator info:
   prey_df <- observations_df %>%
@@ -115,7 +116,7 @@ for(i in unique(data$id_operation)) {
     
     # Format tibble to data frame and remove junk:
     as_data_frame() %>%
-    dplyr::select(-id_operation, -length_fresh, -mean_density)
+    dplyr::select(-id, -length_fresh, -mean_density)
   
   # Get a table with predictied prey abundances after 1 day:
   observations_df2 <- observations_df %>%
@@ -128,8 +129,8 @@ for(i in unique(data$id_operation)) {
   # What was the tota survival rate?
   prey_t0 <- sum(prey_df$mean_density)
   prey_t24 <- sum(observations_df2$prey_density_24)
-  id_operation <- i
-  df1 <- rbind(df1, data.frame(id_operation, prey_t0, prey_t24))
+  id <- i
+  df1 <- rbind(df1, data.frame(id, prey_t0, prey_t24))
 }
 
 # The 0s result from stations where there were either no prey or no predators
@@ -148,20 +149,20 @@ head(df1)
 # To remove them keeping those samples that had predators but no prey, we do the follwoing:
 
 # Keep track of stations with predator but no prey:
-id_noprey_stations <- subset(df1, is.na(proportion_survivors))$id_operation
+id_noprey_stations <- subset(df1, is.na(proportion_survivors))$id
 
 temp <- data2 %>%
-  dplyr::select(id_operation, year, talalunga_n)
+  dplyr::select(id, year, talalunga_n)
 
 # Combine temp with df1:
-df1 <- left_join(temp, df1, by = "id_operation")
+df1 <- left_join(temp, df1, by = "id")
 
 
 # Filter real NA from prey_t0 and positive prey_t0:
 temp1 <- subset(df1, is.na(prey_t0) & talalunga_n == 0 | prey_t0 > 0 & talalunga_n > 0)
 
 # Filter  NA's that belong to sations that had predaotrs but not prey:
-temp2 <- subset(df1, id_operation %in% id_noprey_stations)
+temp2 <- subset(df1, id %in% id_noprey_stations)
 
 # Combine the tables:
 df1 <- rbind(temp1, temp2)
@@ -190,15 +191,15 @@ rm(list = c("temp", "temp1", "temp2", "prey_df", "predator_df", "observations_df
 
 # Get a data frame with the risk of dying for a 4.1 mm albacore:
 data2_temp <- data2 %>%
-  dplyr::select(id_operation, year)
+  dplyr::select(id, year)
 
 df_risc <- data %>%
-  filter(id_operation %in% data2_temp$id_operation, 
+  filter(id %in% data2_temp$id, 
          species ==  "Thunnus thynnus", length_fresh >= predator_cutoff)
 
 # Make some shenanigans to calculate predation of each predator cohort over each prey cohort, leaving intermediate sizes away:
 df_risc <- df_risc %>%
-  arrange(id_operation) %>%
+  arrange(id) %>%
   mutate(predator_length = length_fresh / 1000,
          predator_density = mean_density,
          prey_length = prey_cutoff / 1000,
@@ -216,12 +217,12 @@ df_risc <- df_risc %>%
          survival_d = exp(-encounter_rate_h * probability_capture_success * sum(light))) %>% 
   as_data_frame() %>%
   dplyr::select(-length_fresh, -mean_density) %>%
-  group_by(id_operation) %>%
+  group_by(id) %>%
   summarise(total_survival_d = prod(survival_d))
 
 
 # Next, we have to join both tables and replace survival == 1 where needed:
-df_risc <- data2_temp %>% left_join(df_risc, by = "id_operation") %>%
+df_risc <- data2_temp %>% left_join(df_risc, by = "id") %>%
   mutate(total_survival_d = case_when(is.na(total_survival_d) ~ 1,
                                       T ~ total_survival_d),
          probability_mortality_d = 1 - total_survival_d)
@@ -264,14 +265,14 @@ rm(list = c("stations", "stations_50", "total_stations"))
 
 # Select the variables of interest of each table and put them in a single table:
 data2_temp <- data2 %>%
-  dplyr::select(id_operation, talalunga_dens)
+  dplyr::select(id, talalunga_dens)
 
 df_risc <- df_risc %>%
   dplyr::select(-year)
 
-df2 <- left_join(df1, df_risc, by = "id_operation")
+df2 <- left_join(df1, df_risc, by = "id")
 
-df2 <- left_join(df2, data2_temp, by = "id_operation")
+df2 <- left_join(df2, data2_temp, by = "id")
 
 # Save this as df3 and aff period:
 df3 <- df2 %>%
