@@ -22,6 +22,9 @@ rm(list = ls())
 # Load packages:
 library(tidyverse)
 
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
 
 ###########################################################################
 

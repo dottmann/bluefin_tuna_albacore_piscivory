@@ -3,7 +3,7 @@
 
 # Author: Daniel Ottmann
 # Created: May 2020
-# Last update: May 2021
+# Last update: August 2021
 
 
 ###########################################
@@ -18,6 +18,9 @@
 ##################################################################
 # Clear environment:
 rm(list = ls())
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
 
 
 #############################

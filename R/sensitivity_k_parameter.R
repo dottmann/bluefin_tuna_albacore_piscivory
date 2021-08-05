@@ -24,6 +24,9 @@ rm(list = ls())
 library(tidyverse)
 library(cowplot)
 
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
 
 #################################################################################
 

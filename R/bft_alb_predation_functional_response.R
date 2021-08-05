@@ -27,6 +27,9 @@ library(tidyverse)
 library(grid)
 library(png)
 
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
 
 ##################################################################
 # Load data
