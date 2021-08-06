@@ -352,5 +352,5 @@ dev.off()
 t.test(subset(df3, period == "Before tuna recovery")$total_survival, subset(df3, period == "After tuna recovery")$total_survival)
 
 
-#                 END OF SCRIPT
+#                  END OF SCRIPT
 ###########################################################
