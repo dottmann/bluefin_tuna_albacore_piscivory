@@ -351,6 +351,14 @@ dev.off()
 # Do a Welch Two Sample t-test to copare if predator pressure before and after the BFT stock recovery differs:
 t.test(subset(df3, period == "Before tuna recovery")$total_survival, subset(df3, period == "After tuna recovery")$total_survival)
 
+# Do a Welch Two Sample t-test to copare if brey abundance before and after the BFT stock recovery differs:
+t.test(subset(df3, period == "Before tuna recovery")$prey_t0, subset(df3, period == "After tuna recovery")$prey_t0)
+
+# Evaluate temporal correlation between mean prey abundance vs mean predator abundance and presnece, and probability ofsurviving 1 day:
+cor(df2$mean_prey_t0, df_postflexion$mean_predator_dens)
+cor(df2$mean_prey_t0, df3_presence$percent_presence_postflex)
+cor(df2$mean_prey_t0, df2$mean_probability_surviving_d)
+
 
 #                  END OF SCRIPT
 ###########################################################
