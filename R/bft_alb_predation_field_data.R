@@ -231,6 +231,7 @@ df_risc <- data2_temp %>% left_join(df_risc, by = "id") %>%
          probability_mortality_d = 1 - total_survival_d)
 
 
+# We can evaluate how patchiness of predators changed after the stock recovery by seting a survival threshold and seing how it changed.
 # Change in frequency of stations with 53% chance of dying in one day:
 
 total_stations <- df_risc %>%
@@ -358,6 +359,23 @@ t.test(subset(df3, period == "Before tuna recovery")$prey_t0, subset(df3, period
 cor(df2$mean_prey_t0, df_postflexion$mean_predator_dens)
 cor(df2$mean_prey_t0, df3_presence$percent_presence_postflex)
 cor(df2$mean_prey_t0, df2$mean_probability_surviving_d)
+
+
+# Plot density-distribution of pre-flexion albacore:
+p <- ggplot(data = df1) +
+  geom_histogram(aes(x = prey_t0, y = (..count..)/sum(..count..)), fill = "#00A5FF", color = "black") +
+  scale_y_continuous(labels =  scales::percent, limits = c(0, .11)) +
+  scale_x_continuous(limits = c(0, 0.55)) +
+  xlab(expression("Albacore density (larvae m"^-3*")")) +
+  ylab("% stations") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+
+# png(filename = "plots/talalunga_preflexion_density.png", width = 10, height = 8, units = "cm", res = 300)
+p
+dev.off()
+
+
 
 
 #                  END OF SCRIPT
