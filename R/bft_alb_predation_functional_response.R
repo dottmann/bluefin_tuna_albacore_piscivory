@@ -218,10 +218,10 @@ for(j in x) {
     geom_vline(xintercept = c(prey_cutoff), linetype = "dotted", alpha = .5) +
     geom_col(aes(x = prey_length * 1000, y = prey_density / nrow(sim_predator_i)), width = .09) +
     lims(x = c(2.2, 7.5)) + # 13.1
-    labs(x = "Standard length (mm)", y = expression("#")) +         # Albacore density (larvae m"^-3*")
+    labs(x = "Standard length (mm)", y = expression("#")) +         # ALB density (larvae m"^-3*")
     geom_col(data = simulation2, aes(x = prey_length * 1000, y = prey_density_24), fill = "black", width = .09) +
     geom_line(data = simulation2, aes(x = prey_length * 1000, y = total_survival_d * .19/1), show.legend = FALSE, alpha = .9, color = "red") +
-    scale_y_continuous(sec.axis = sec_axis(~ .* (1/.19), name = "#"), limits = c(0, .2)) +      # "Albacore probability to survie 1 day"
+    scale_y_continuous(sec.axis = sec_axis(~ .* (1/.19), name = "#"), limits = c(0, .2)) +      # "ALB probability to survie 1 day"
     theme_bw() +
     theme(panel.grid = element_blank(),
           axis.title.y.right = element_text(color = "red"),
@@ -376,7 +376,7 @@ p <- ggplot() +
             color = "black", linetype = "dashed", show.legend = FALSE, alpha = 1, size = .3) +
   geom_point(data = df12_sim, aes(x = total_predator_density, y =  5.5 * probability_survival), colour = "black", shape = 22, fill = "white", size = 2) +
   
-  scale_y_continuous(sec.axis = sec_axis(~ (.) * (100/5.5), name = "% albacore surviving one day")) +
+  scale_y_continuous(sec.axis = sec_axis(~ (.) * (100/5.5), name = "% ALB surviving one day")) +
   
   labs(x = expression("BFT density (larvae m"^-3*")"), y = expression("% observed stations at given BFT density")) +
   theme_bw() +

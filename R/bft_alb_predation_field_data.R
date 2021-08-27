@@ -333,7 +333,7 @@ p <- ggplot() +
 #   scale_y_continuous(sec.axis = sec_axis(~(. + 0) * (800), name = "% stations with
 # presence of piscivorous BFT")) +
   
-  labs(x = "Year", y = expression("Mean albacore density (larvae m"^-3*")")) +
+  labs(x = "Year", y = expression("Mean ALB density (larvae m"^-3*")")) +
   
   
   theme_bw() +
