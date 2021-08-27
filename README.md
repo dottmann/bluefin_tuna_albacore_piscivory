@@ -7,4 +7,4 @@ This repository contains all files needed to run the model and analysis, and gen
 
 It has 3 folders containing the source code, data files and figures. The code is written in R by Daniel Ottmann.
 
-Daniel Ottmann, June 2021 Spanish Institute of Oceanography, Spain
+Daniel Ottmann, September 2021 Spanish Institute of Oceanography, Spain
